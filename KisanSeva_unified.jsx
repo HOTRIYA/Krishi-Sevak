@@ -10,6 +10,8 @@ import {
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+import { CircleMarker, MapContainer, Popup, TileLayer, useMap } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 /* ============================================================
    Kisan Seva — unified prototype
@@ -2737,27 +2739,51 @@ function AdminRole({ a11y, setA11y, showToast }) {
 
 const PUBLIC_BLOCKS = ["Sanganer", "Bagru", "Chomu", "Amer", "Phulera"];
 
+const PUBLIC_MAP_CENTER = [26.91, 75.64];
+const PUBLIC_MAP_ZOOM = 10;
+const PUBLIC_MAP_COORDS = {
+  Chomu: [27.17, 75.72], Amer: [26.985, 75.85], Phulera: [26.87, 75.24],
+  Bagru: [26.82, 75.55], Sanganer: [26.82, 75.77],
+  "Village A": [26.84, 75.72], "Village B": [26.80, 75.84],
+};
+
+function PublicMapViewport({ selected }) {
+  const map = useMap();
+  useEffect(() => {
+    const selectedCoords = PUBLIC_MAP_COORDS[selected];
+    if (selectedCoords) map.flyTo(selectedCoords, 12, { duration: 0.6 });
+  }, [map, selected]);
+  return null;
+}
+
 function PublicMap({ selected, onSelect }) {
-  const villageA = VILLAGES.find((v) => v.name === "Village A");
-  const villageB = VILLAGES.find((v) => v.name === "Village B");
   return (
-    <div style={{ position: "relative" }}>
-      <svg viewBox="0 0 640 340" style={{ width: "100%", height: "auto", display: "block", borderRadius: 10, background: COLOR.surfaceSunken }}>
-        <path d="M 60 30 C 200 -2, 480 0, 580 56 C 622 128, 608 248, 556 306 C 452 348, 196 346, 92 304 C 30 244, 22 108, 60 30 Z" fill={COLOR.forestTint} opacity="0.4" stroke={COLOR.forest} strokeOpacity="0.25" strokeWidth="1.5" />
-        <line x1={villageA.x} y1={villageA.y} x2={villageB.x} y2={villageB.y} stroke={COLOR.forest} strokeWidth="2" strokeDasharray="5,4" opacity="0.5" />
-        {VILLAGES.filter((v) => v.kind !== "SATELLITE").map((v) => (
-          <g key={v.name} onClick={() => onSelect(v.name)} style={{ cursor: "pointer" }}>
-            {v.name === selected && <circle cx={v.x} cy={v.y} r={v.r + 9} fill="none" stroke={COLOR.forest} strokeWidth="2" opacity="0.5" />}
-            <circle cx={v.x} cy={v.y} r={v.r + 2} fill={VILLAGE_COLOR[v.kind]} stroke="#fff" strokeWidth="2" />
-            <text x={v.x} y={v.y - v.r - 9} textAnchor="middle" fontSize="11.5" fontWeight="700" fill={COLOR.text}>{v.name}</text>
-          </g>
-        ))}
-      </svg>
-      <div style={{ position: "absolute", left: 12, bottom: 12, background: "rgba(255,255,255,0.92)", border: `1px solid ${COLOR.border}`, borderRadius: 8, padding: "8px 12px", fontSize: 11.5, display: "flex", flexDirection: "column", gap: 4 }}>
-        {[["🟢 Normal reporting", COLOR.textMuted], ["🟡 Elevated reporting", COLOR.amber], ["🟠 High reporting", COLOR.orange], ["🔴 Potential cluster", COLOR.red]].map(([label]) => (
-          <div key={label} style={{ color: COLOR.text }}>{label}</div>
-        ))}
-      </div>
+    <div style={{ overflow: "hidden", borderRadius: 10 }}>
+      <MapContainer center={PUBLIC_MAP_CENTER} zoom={PUBLIC_MAP_ZOOM} scrollWheelZoom style={{ width: "100%", height: 360 }}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <PublicMapViewport selected={selected} />
+        {VILLAGES.filter((v) => v.kind !== "SATELLITE").map((v) => {
+          const coords = PUBLIC_MAP_COORDS[v.name];
+          const isSelected = v.name === selected;
+          return (
+            <CircleMarker
+              key={v.name}
+              center={coords}
+              radius={isSelected ? 11 : 8}
+              pathOptions={{ color: "#fff", weight: 2, fillColor: VILLAGE_COLOR[v.kind], fillOpacity: 0.9 }}
+              eventHandlers={{ click: () => onSelect(v.name) }}
+            >
+              <Popup>
+                <strong>{v.name}</strong>
+                <br />Area-level reporting data
+              </Popup>
+            </CircleMarker>
+          );
+        })}
+      </MapContainer>
     </div>
   );
 }
@@ -2785,20 +2811,6 @@ function PublicHeader({ onSignInClick }) {
       </div>
       <Button variant="secondary" small onClick={onSignInClick}>Authority login</Button>
     </div>
-  );
-}
-
-function PublicAdvisoryModal({ advisory, onClose }) {
-  return (
-    <Modal title={advisory.title} onClose={onClose}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", marginBottom: 14 }}>
-        <Field label="Issued for" value={advisory.area} /><Field label="Date" value={advisory.date || "Recent"} />
-        <Field label="Language" value={advisory.language} /><Field label="Animal category" value={advisory.animal} />
-      </div>
-      <div style={{ background: COLOR.surfaceSunken, borderRadius: 10, padding: 14, marginBottom: 14, fontSize: 14, lineHeight: 1.7 }}>{advisory.message}</div>
-      <div style={{ fontSize: 12, color: COLOR.textSecondary, marginBottom: 16 }}>Issued by: Jaipur District Veterinary Authority</div>
-      <Button variant="primary" icon={Phone}>Contact veterinary support</Button>
-    </Modal>
   );
 }
 
