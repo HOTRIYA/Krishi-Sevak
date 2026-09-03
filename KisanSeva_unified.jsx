@@ -185,9 +185,52 @@ const VILLAGES = [
 ];
 const VILLAGE_COLOR = { NORMAL: COLOR.textMuted, ELEVATED: COLOR.amber, HIGH: COLOR.orange, CLUSTER: COLOR.red, SATELLITE: COLOR.forest };
 
+const SHARED_MAP_CENTER = [26.91, 75.64];
+const SHARED_MAP_COORDS = {
+  Chomu: [27.17, 75.72], Amer: [26.985, 75.85], Phulera: [26.87, 75.24],
+  Bagru: [26.82, 75.55], Sanganer: [26.82, 75.77],
+  "Village A": [26.84, 75.72], "Village B": [26.80, 75.84],
+};
+const SHARED_MAP_ZONES = [
+  { name: "Sanganer high-risk zone", center: [26.82, 75.77], radius: 42, color: "#C83F35", type: "High reporting" },
+  { name: "Phulera high-risk zone", center: [26.87, 75.24], radius: 34, color: "#C83F35", type: "High reporting" },
+  { name: "Bagru medium-risk zone", center: [26.82, 75.55], radius: 31, color: "#D39A24", type: "Medium reporting" },
+  { name: "Amer medium-risk zone", center: [26.985, 75.85], radius: 28, color: "#D39A24", type: "Medium reporting" },
+  { name: "Chomu medium-risk zone", center: [27.17, 75.72], radius: 30, color: "#D39A24", type: "Medium reporting" },
+  { name: "Kalwar crop reporting area", center: [27.07, 75.67], radius: 25, color: "#3279B4", type: "Crop-related reports" },
+  { name: "Kukas crop reporting area", center: [27.03, 75.90], radius: 27, color: "#3279B4", type: "Crop-related reports" },
+  { name: "Dudu crop reporting area", center: [26.73, 75.57], radius: 24, color: "#3279B4", type: "Crop-related reports" },
+];
+
+function SharedMapViewport({ selected }) {
+  const map = useMap();
+  useEffect(() => {
+    const selectedCoords = SHARED_MAP_COORDS[selected];
+    if (selectedCoords) map.flyTo(selectedCoords, 12, { duration: 0.6 });
+  }, [map, selected]);
+  return null;
+}
+
+function InteractiveMap({ height = 340, highlight, onSelectCluster }) {
+  return (
+    <div style={{ position: "relative", overflow: "hidden", borderRadius: 10 }}>
+      <MapContainer center={SHARED_MAP_CENTER} zoom={10} scrollWheelZoom style={{ width: "100%", height }}>
+        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <SharedMapViewport selected={highlight} />
+        {SHARED_MAP_ZONES.map((zone) => <CircleMarker key={zone.name} center={zone.center} radius={zone.radius} pathOptions={{ color: zone.color, weight: 1.5, fillColor: zone.color, fillOpacity: 0.2 }}><Popup><strong>{zone.name}</strong><br />{zone.type}<br />Aggregated map area</Popup></CircleMarker>)}
+        {VILLAGES.filter((v) => v.kind !== "SATELLITE").map((v) => <CircleMarker key={v.name} center={SHARED_MAP_COORDS[v.name]} radius={v.name === highlight ? 11 : v.kind === "CLUSTER" ? 9 : 7} pathOptions={{ color: "#fff", weight: 2, fillColor: VILLAGE_COLOR[v.kind], fillOpacity: 0.95 }} eventHandlers={{ click: () => v.kind === "CLUSTER" && onSelectCluster && onSelectCluster(v) }}><Popup><strong>{v.name}</strong><br />Area-level reporting data</Popup></CircleMarker>)}
+      </MapContainer>
+      <div style={{ position: "absolute", left: 12, bottom: 12, zIndex: 1000, background: "rgba(255,255,255,0.94)", border: `1px solid ${COLOR.border}`, borderRadius: 8, padding: "8px 10px", fontSize: 11.5, lineHeight: 1.5, color: COLOR.text }}>
+        {["#C83F35|High reporting", "#D39A24|Medium reporting", "#3279B4|Crop-related reports"].map((item) => { const [color, label] = item.split("|"); return <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: "50%", background: color, opacity: 0.75 }} />{label}</div>; })}
+      </div>
+    </div>
+  );
+}
+
 function MiniMap({ highlight }) {
   const villageA = VILLAGES.find((v) => v.name === "Village A");
   const villageB = VILLAGES.find((v) => v.name === "Village B");
+  return <InteractiveMap height={300} highlight={highlight} />;
   return (
     <svg viewBox="0 0 640 340" style={{ width: "100%", height: "auto", display: "block", borderRadius: 10, background: COLOR.surfaceSunken }}>
       <path d="M 60 30 C 200 -2, 480 0, 580 56 C 622 128, 608 248, 556 306 C 452 348, 196 346, 92 304 C 30 244, 22 108, 60 30 Z" fill={COLOR.forestTint} opacity="0.4" stroke={COLOR.forest} strokeOpacity="0.25" strokeWidth="1.5" />
@@ -208,6 +251,7 @@ function MiniMap({ highlight }) {
 function SurveillanceMap({ onSelectCluster }) {
   const villageA = VILLAGES.find((v) => v.name === "Village A");
   const villageB = VILLAGES.find((v) => v.name === "Village B");
+  return <InteractiveMap height={330} onSelectCluster={onSelectCluster} />;
   return (
     <div style={{ position: "relative" }}>
       <svg viewBox="0 0 640 360" style={{ width: "100%", height: "auto", display: "block", borderRadius: 10, background: COLOR.surfaceSunken }}>
@@ -2746,6 +2790,16 @@ const PUBLIC_MAP_COORDS = {
   Bagru: [26.82, 75.55], Sanganer: [26.82, 75.77],
   "Village A": [26.84, 75.72], "Village B": [26.80, 75.84],
 };
+const PUBLIC_MAP_ZONES = [
+  { name: "Sanganer high-risk zone", center: [26.82, 75.77], radius: 42, color: "#C83F35", type: "High reporting" },
+  { name: "Phulera high-risk zone", center: [26.87, 75.24], radius: 34, color: "#C83F35", type: "High reporting" },
+  { name: "Bagru medium-risk zone", center: [26.82, 75.55], radius: 31, color: "#D39A24", type: "Medium reporting" },
+  { name: "Amer medium-risk zone", center: [26.985, 75.85], radius: 28, color: "#D39A24", type: "Medium reporting" },
+  { name: "Chomu medium-risk zone", center: [27.17, 75.72], radius: 30, color: "#D39A24", type: "Medium reporting" },
+  { name: "Kalwar crop reporting area", center: [27.07, 75.67], radius: 25, color: "#3279B4", type: "Crop-related reports" },
+  { name: "Kukas crop reporting area", center: [27.03, 75.90], radius: 27, color: "#3279B4", type: "Crop-related reports" },
+  { name: "Dudu crop reporting area", center: [26.73, 75.57], radius: 24, color: "#3279B4", type: "Crop-related reports" },
+];
 
 function PublicMapViewport({ selected }) {
   const map = useMap();
@@ -2758,13 +2812,27 @@ function PublicMapViewport({ selected }) {
 
 function PublicMap({ selected, onSelect }) {
   return (
-    <div style={{ overflow: "hidden", borderRadius: 10 }}>
+    <div style={{ position: "relative", overflow: "hidden", borderRadius: 10 }}>
       <MapContainer center={PUBLIC_MAP_CENTER} zoom={PUBLIC_MAP_ZOOM} scrollWheelZoom style={{ width: "100%", height: 360 }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <PublicMapViewport selected={selected} />
+        {PUBLIC_MAP_ZONES.map((zone) => (
+          <CircleMarker
+            key={zone.name}
+            center={zone.center}
+            radius={zone.radius}
+            pathOptions={{ color: zone.color, weight: 1.5, fillColor: zone.color, fillOpacity: 0.2 }}
+          >
+            <Popup>
+              <strong>{zone.name}</strong>
+              <br />{zone.type}
+              <br />Aggregated map area
+            </Popup>
+          </CircleMarker>
+        ))}
         {VILLAGES.filter((v) => v.kind !== "SATELLITE").map((v) => {
           const coords = PUBLIC_MAP_COORDS[v.name];
           const isSelected = v.name === selected;
@@ -2784,6 +2852,12 @@ function PublicMap({ selected, onSelect }) {
           );
         })}
       </MapContainer>
+      <div style={{ position: "absolute", left: 12, bottom: 12, zIndex: 1000, background: "rgba(255,255,255,0.94)", border: `1px solid ${COLOR.border}`, borderRadius: 8, padding: "8px 10px", fontSize: 11.5, lineHeight: 1.5, color: COLOR.text }}>
+        {["#C83F35|High reporting", "#D39A24|Medium reporting", "#3279B4|Crop-related reports"].map((item) => {
+          const [color, label] = item.split("|");
+          return <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: "50%", background: color, opacity: 0.75 }} />{label}</div>;
+        })}
+      </div>
     </div>
   );
 }
