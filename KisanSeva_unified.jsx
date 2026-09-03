@@ -13,16 +13,6 @@ import {
 import { CircleMarker, MapContainer, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-/* ============================================================
-   Kisan Seva — unified prototype
-   One shared design system, one shared dataset (cases, alerts,
-   movements, experts), one login, and a role switcher across
-   Farmer / Call Console / Authority / Expert / Surveillance /
-   Admin. Actions in one role are reflected when you switch —
-   e.g. accept a case as the Expert, then look at it on the
-   Authority dashboard.
-   ============================================================ */
-
 const COLOR = {
   bg: "#FAF7EF", surface: "#FFFFFF", surfaceSunken: "#F3EFE4",
   border: "#E3DDCC", borderStrong: "#CFC6AC",
@@ -66,8 +56,6 @@ const SOURCE_TONE = {
   "Lab verified": { fg: COLOR.green, bg: COLOR.greenTint },
 };
 
-/* ---------------- Shared primitives ---------------- */
-
 function Badge({ fg, bg, dot, children }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11.5, fontWeight: 600, padding: "3px 9px", borderRadius: 20, color: fg, background: bg, whiteSpace: "nowrap" }}>
@@ -83,7 +71,7 @@ const SourceTag = ({ source }) => { const t = SOURCE_TONE[source] || SOURCE_TONE
 
 function Card({ title, right, children, pad = 18, innerRef }) {
   return (
-    <div ref={innerRef} style={{ background: COLOR.surface, border: `1px solid ${COLOR.border}`, borderRadius: 12, padding: pad, marginBottom: 14 }}>
+    <div ref={innerRef} style={{ background: COLOR.surface, border: `1px solid ${COLOR.borderStrong}`, borderRadius: 12, padding: pad, marginBottom: 14 }}>
       {title && (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 13 }}>
           <h3 style={{ margin: 0, fontSize: 13.5, fontWeight: 700, color: COLOR.text }}>{title}</h3>
@@ -171,8 +159,6 @@ function GlobalToast({ msg }) {
   if (!msg) return null;
   return <div style={{ position: "fixed", bottom: 20, right: 20, background: COLOR.forestDeep, color: "#fff", padding: "10px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, zIndex: 300, boxShadow: "0 4px 16px rgba(0,0,0,0.25)" }}>✓ {msg}</div>;
 }
-
-/* ---------------- Shared map data ---------------- */
 
 const VILLAGES = [
   { name: "Chomu", x: 250, y: 62, r: 5, kind: "NORMAL" },
@@ -280,10 +266,6 @@ function SurveillanceMap({ onSelectCluster }) {
     </div>
   );
 }
-
-/* ============================================================
-   SHARED DATA — one canonical dataset every role reads from
-   ============================================================ */
 
 const EXPERTS_DIR = [
   { name: "Dr. Sharma", role: "Veterinary Officer", specialization: "Livestock (Cattle & Buffalo)", district: "Jaipur", area: "Sanganer", phone: "•••• 2210", languages: ["Hindi", "English"], availability: "AVAILABLE", cases: 8, response: "12 min" },
@@ -628,10 +610,6 @@ const RISK_TREND = [
 ];
 const MORTALITY_TREND = [12, 10, 14, 11, 15, 13, 18];
 
-/* ============================================================
-   ROLE: FARMER (mobile-first PWA)
-   ============================================================ */
-
 const FARMER_NAME = "Ramesh Choudhary";
 const FARMER_LANG = {
   en: { namaste: "Namaste 👋", greeting: "How can we help your livestock today?", reportCta: "Report a problem", reportSub: "Tell us about your animal's health problem.", myReports: "My reports", advisories: "Advisories", nearbyHelp: "Nearby help", urgent: "Need urgent veterinary help?", contactExpert: "Contact nearby expert" },
@@ -653,7 +631,7 @@ const DURATIONS = ["Today", "1–2 days", "3–7 days", "More than a week", "Not
 const AFFECTED_COUNTS = ["1", "2–5", "6–10", "More than 10", "Not sure"];
 const MOVE_WHEN = ["Today", "1–3 days ago", "Within a week", "More than a week ago", "Not sure"];
 const NEARBY = [
-  { name: "Dr. Sharma — Veterinary Officer", area: "Sanganer", available: true },
+  { name: "Dr. Sharma, Veterinary Officer", area: "Sanganer", available: true },
   { name: "Veterinary Centre, Sanganer", area: "Govt. facility · 2.4 km", available: null },
 ];
 
@@ -722,7 +700,7 @@ function FarmerHome({ lang, onNavigate, connectivity, drafts }) {
       </div>
       <div style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: connectivity === "online" ? COLOR.green : COLOR.amber, fontWeight: 600 }}>
         <span style={{ width: 7, height: 7, borderRadius: "50%", background: connectivity === "online" ? COLOR.green : COLOR.amber, display: "inline-block" }} />
-        {connectivity === "online" ? "Connected" : "Offline — reports will sync later"}
+        {connectivity === "online" ? "Connected" : "Offline, reports will sync later"}
       </div>
     </div>
   );
@@ -853,7 +831,7 @@ function FarmerStepSymptoms({ data, set }) {
   return (
     <div>
       <h2 style={{ fontSize: 16, fontWeight: 700, margin: "4px 0 6px" }}>Select symptoms</h2>
-      <div style={{ fontSize: 12.5, color: COLOR.textSecondary, marginBottom: 14 }}>Optional — helps us understand the problem faster.</div>
+      <div style={{ fontSize: 12.5, color: COLOR.textSecondary, marginBottom: 14 }}>Optional, helps us understand the problem faster.</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>{SYMPTOMS.map((s) => <OptionButton key={s.id} icon={s.icon} label={s.label} compact selected={data.symptoms.includes(s.id)} onClick={() => toggle(s.id)} />)}</div>
     </div>
   );
@@ -874,7 +852,7 @@ function FarmerStepAffected({ data, set }) {
       <h2 style={{ fontSize: 16, fontWeight: 700, margin: "4px 0 14px" }}>Has any animal died?</h2>
       <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>{["Yes", "No", "Not sure"].map((v) => <div key={v} style={{ flex: 1 }}><OptionButton compact label={v} selected={data.mortality === v} onClick={() => set({ mortality: v, mortalityCount: v === "Yes" ? data.mortalityCount : "" })} /></div>)}</div>
       {data.mortality === "Yes" && <input value={data.mortalityCount} onChange={(e) => set({ mortalityCount: e.target.value })} placeholder="How many?" inputMode="numeric" style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 12, border: `1.5px solid ${COLOR.border}`, fontSize: 14 }} />}
-      <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginTop: 10 }}>Recorded as "reported mortality" — this does not assume a cause.</div>
+      <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginTop: 10 }}>Recorded as "reported mortality", this does not assume a cause.</div>
     </div>
   );
 }
@@ -946,21 +924,21 @@ function FarmerReviewStep({ data, onBack, onEdit, onSubmit, connectivity }) {
           <FarmerRowKV label="Symptoms" value={symptomLabels.length ? symptomLabels.join(", ") : "Not specified"} onEdit={() => onEdit(2)} />
           <FarmerRowKV label="Duration" value={data.duration || "—"} onEdit={() => onEdit(3)} />
           <FarmerRowKV label="Affected" value={`${data.affected || "—"} animal(s)`} onEdit={() => onEdit(4)} />
-          <FarmerRowKV label="Mortality" value={data.mortality === "Yes" ? `Reported — ${data.mortalityCount || "?"}` : data.mortality === "No" ? "None reported" : "Not sure"} onEdit={() => onEdit(4)} />
+          <FarmerRowKV label="Mortality" value={data.mortality === "Yes" ? `Reported, ${data.mortalityCount || "?"}` : data.mortality === "No" ? "None reported" : "Not sure"} onEdit={() => onEdit(4)} />
           <FarmerRowKV label="Location" value={data.gpsDone ? "GPS location shared" : data.pin ? `PIN ${data.pin}` : "—"} onEdit={() => onEdit(5)} />
-          <FarmerRowKV label="Livestock movement" value={data.movement === "Yes" ? `Yes — ${data.moveFrom || "?"} → ${data.moveTo || "?"}` : data.movement || "—"} onEdit={() => onEdit(6)} last />
+          <FarmerRowKV label="Livestock movement" value={data.movement === "Yes" ? `Yes, ${data.moveFrom || "?"} → ${data.moveTo || "?"}` : data.movement || "—"} onEdit={() => onEdit(6)} last />
         </div>
         <div style={{ background: COLOR.surfaceSunken, borderRadius: 14, padding: 16, marginBottom: 16 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: COLOR.textMuted, marginBottom: 6 }}>AI SUMMARY</div>
           <div style={{ fontSize: 13.5, color: COLOR.text, lineHeight: 1.6, marginBottom: 8, fontStyle: "italic" }}>
             "Farmer reports a{animal?.label === "Other" ? "n" : ""} {animal?.label?.toLowerCase()} with {symptomLabels.length ? symptomLabels.join(", ").toLowerCase() : "a health problem"}{data.duration ? `, duration ${data.duration.toLowerCase()}` : ""}."
           </div>
-          <div style={{ fontSize: 11, color: COLOR.textMuted }}>AI-generated summary — may require expert verification.</div>
+          <div style={{ fontSize: 11, color: COLOR.textMuted }}>AI-generated summary, may require expert verification.</div>
         </div>
       </div>
       <div style={{ position: "sticky", bottom: 0, background: COLOR.bg, padding: "12px 18px 18px", borderTop: `1px solid ${COLOR.border}` }}>
         <PrimaryBtn onClick={onSubmit}>Submit report</PrimaryBtn>
-        {connectivity !== "online" && <div style={{ fontSize: 11.5, color: COLOR.amber, marginTop: 8, textAlign: "center" }}>⚠ You're offline — this will be saved on your device and synced later.</div>}
+        {connectivity !== "online" && <div style={{ fontSize: 11.5, color: COLOR.amber, marginTop: 8, textAlign: "center" }}>⚠ You're offline, this will be saved on your device and synced later.</div>}
       </div>
     </div>
   );
@@ -1018,7 +996,7 @@ function FarmerSubmissionResult({ result, onDone, onViewCase }) {
       ) : (
         <div style={{ background: COLOR.surface, border: `1px solid ${COLOR.border}`, borderRadius: 14, padding: 18, textAlign: "left" }}>
           <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 4 }}>No expert is currently available</div>
-          <div style={{ fontSize: 12.5, color: COLOR.textSecondary, marginBottom: 16 }}>You don't need to repeat your report — it's already saved to your case.</div>
+          <div style={{ fontSize: 12.5, color: COLOR.textSecondary, marginBottom: 16 }}>You don't need to repeat your report, it's already saved to your case.</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}><PrimaryBtn onClick={onDone}>Request callback</PrimaryBtn><GhostBtn onClick={onViewCase}>View case</GhostBtn></div>
         </div>
       )}
@@ -1034,7 +1012,7 @@ function FarmerMyReports({ myCases, drafts, onBack, onOpenCase }) {
       <div style={{ padding: "6px 18px" }}>
         {drafts.length > 0 && (
           <>
-            <div style={{ fontSize: 12, fontWeight: 700, color: COLOR.textMuted, margin: "10px 0 8px" }}>SAVED — WAITING TO SYNC</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: COLOR.textMuted, margin: "10px 0 8px" }}>SAVED, WAITING TO SYNC</div>
             {drafts.map((d, i) => (
               <div key={i} style={{ border: `1px solid ${COLOR.border}`, borderRadius: 12, padding: 14, marginBottom: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div><div style={{ fontSize: 13.5, fontWeight: 700 }}>{d.animalLabel}</div><div style={{ fontSize: 12, color: COLOR.textSecondary }}>{d.symptomLabels || "Health problem reported"}</div></div>
@@ -1167,18 +1145,18 @@ function FarmerRole({ cases, addCase, updateCase, advisories }) {
         animal: { value: animal?.label, source: "Farmer reported" }, symptoms: { value: symptomLabels || "Not specified", source: "Farmer reported" },
         duration: { value: data.duration || "Not sure", source: "Farmer reported" }, water: { value: "Not asked", source: "Farmer reported" },
         affected: { value: data.affected || "1", source: "Farmer reported" },
-        mortality: { value: data.mortality === "Yes" ? `Reported — ${data.mortalityCount || "unspecified"}` : data.mortality === "No" ? "None reported" : "Not sure", source: "Farmer reported" },
+        mortality: { value: data.mortality === "Yes" ? `Reported, ${data.mortalityCount || "unspecified"}` : data.mortality === "No" ? "None reported" : "Not sure", source: "Farmer reported" },
       },
       riskReasons: data.symptoms.length ? data.symptoms : ["Single mild symptom"],
       transcript: data.mode === "voice" ? [{ speaker: "farmer", text: data.description }] : [],
       transcriptEdited: false,
       movement: data.movement === "Yes" ? { reported: true, previous: data.moveFrom || "Unspecified", current: data.moveTo || "Unspecified", date: "Today", source: "Farmer reported", connection: "Not yet analyzed" } : { reported: false },
       cluster: null,
-      history: [{ time: "Just now", label: "Farmer submitted report via PWA" }, { time: "Just now", label: "AI summary generated" }, { time: "Just now", label: `Risk assessed: ${risk}` }, { time: "Just now", label: available ? "Expert assigned — Dr. Sharma" : "Callback requested" }],
+      history: [{ time: "Just now", label: "Farmer submitted report via PWA" }, { time: "Just now", label: "AI summary generated" }, { time: "Just now", label: `Risk assessed: ${risk}` }, { time: "Just now", label: available ? "Expert assigned, Dr. Sharma" : "Callback requested" }],
       labReferral: null, expertAssessment: null, callback: available ? null : { requestedAt: "Just now", preferred: "As soon as possible" }, resolution: null,
     };
     addCase(newCase);
-    setSubmission({ offline: false, caseId, available, expertName: "Dr. Sharma — Veterinary Officer", expertArea: "Sanganer" });
+    setSubmission({ offline: false, caseId, available, expertName: "Dr. Sharma, Veterinary Officer", expertArea: "Sanganer" });
     setScreen("result");
   };
 
@@ -1213,10 +1191,6 @@ function FarmerRole({ cases, addCase, updateCase, advisories }) {
   );
 }
 
-/* ============================================================
-   ROLE: CALL CONSOLE (phone/IVR + AI voice workflow)
-   ============================================================ */
-
 const AREA_EXPERT = { Sanganer: "Dr. Sharma", Bagru: "Dr. Khan", Chomu: "Dr. Meena", Amer: "Dr. Verma" };
 
 function CallStateChip({ state }) {
@@ -1239,7 +1213,7 @@ function LiveCallsPage({ calls, onOpen }) {
         <h1 style={{ fontSize: 20, margin: 0, fontWeight: 700, color: COLOR.text }}>Live calls</h1>
         <span style={{ fontSize: 13, color: COLOR.green, fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 7, height: 7, borderRadius: "50%", background: COLOR.green, display: "inline-block" }} />{calls.length} active</span>
       </div>
-      <p style={{ fontSize: 13, color: COLOR.textSecondary, margin: "4px 0 18px" }}>Calls currently in progress through the phone/IVR line — AI conversation, transcription and routing state, not the telephony network itself.</p>
+      <p style={{ fontSize: 13, color: COLOR.textSecondary, margin: "4px 0 18px" }}>Calls currently in progress through the phone/IVR line, AI conversation, transcription and routing state, not the telephony network itself.</p>
       <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
         {filters.map((f) => <button key={f.id} onClick={() => setFilter(f.id)} style={{ padding: "7px 14px", borderRadius: 20, fontSize: 12.5, fontWeight: 600, cursor: "pointer", border: `1px solid ${filter === f.id ? COLOR.forest : COLOR.border}`, background: filter === f.id ? COLOR.forest : COLOR.surface, color: filter === f.id ? "#fff" : COLOR.textSecondary }}>{f.label}</button>)}
       </div>
@@ -1300,7 +1274,7 @@ function CallConsoleDetail({ call, onBack, onUpdate, showToast }) {
           </Card>
           <Card title="AI-generated case summary" pad={18}>
             <div style={{ fontSize: 14, color: COLOR.text, lineHeight: 1.6, marginBottom: 10 }}>{call.aiSummary}</div>
-            <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginBottom: 12 }}>AI-generated summary — verify important information with the farmer/expert.</div>
+            <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginBottom: 12 }}>AI-generated summary, verify important information with the farmer/expert.</div>
             <div style={{ display: "flex", gap: 8 }}>
               <Button variant="ghost" small>Edit summary</Button>
               <Button variant={summaryAccepted ? "secondary" : "primary"} small onClick={() => setSummaryAccepted(true)} disabled={summaryAccepted}>{summaryAccepted ? "✓ Accepted" : "Accept"}</Button>
@@ -1309,7 +1283,7 @@ function CallConsoleDetail({ call, onBack, onUpdate, showToast }) {
           {call.movement.reported && (
             <Card title="Livestock movement">
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, fontSize: 14, fontWeight: 600 }}>{call.movement.previous}<ArrowRight size={14} color={COLOR.forest} />{call.movement.current}</div>
-              <div style={{ fontSize: 11.5, color: COLOR.textMuted }}>Farmer-reported movement — not automatic GPS tracking.</div>
+              <div style={{ fontSize: 11.5, color: COLOR.textMuted }}>Farmer-reported movement, not automatic GPS tracking.</div>
             </Card>
           )}
         </div>
@@ -1352,10 +1326,6 @@ function CallConsoleRole({ cases, updateCase, showToast }) {
     </div>
   );
 }
-
-/* ============================================================
-   ROLE: AUTHORITY DASHBOARD
-   ============================================================ */
 
 const AUTHORITY_KPIS = [
   { icon: FileText, label: "Total reports", value: "1,284", delta: "↑ 12.4% vs previous period", tone: "blue" },
@@ -1405,7 +1375,7 @@ function AuthorityClusterPanel({ alert, onReview, onViewCases }) {
         <span style={{ fontSize: 20, fontWeight: 700, color: COLOR.red }}>+{(((alert.reports - alert.baseline) / alert.baseline) * 100).toFixed(0)}%</span>
         <span style={{ fontSize: 12, color: COLOR.textMuted }}>change vs. baseline</span>
       </div>
-      <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginBottom: 14 }}>Potential / unusual reporting pattern detected — requires veterinary/authority verification.</div>
+      <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginBottom: 14 }}>Potential / unusual reporting pattern detected, requires veterinary/authority verification.</div>
       <div style={{ display: "flex", gap: 8 }}><Button variant="secondary" small onClick={onViewCases}>View cases</Button><Button variant="primary" small onClick={onReview}>Review alert</Button></div>
     </Card>
   );
@@ -1636,10 +1606,6 @@ function AuthorityRole({ cases, alerts, updateAlert, advisories, showToast }) {
   );
 }
 
-/* ============================================================
-   ROLE: EXPERT WORKSPACE (logged in as Dr. Sharma)
-   ============================================================ */
-
 const LOGGED_IN_EXPERT = "Dr. Sharma";
 const EXPERT_KPIS = [
   { icon: FileText, label: "New cases", value: 8, delta: "3 high priority", tone: "blue" },
@@ -1732,7 +1698,7 @@ function ExpertOverview({ cases, onOpen, onAccept }) {
       {clusterCase && (
         <div style={{ display: "flex", alignItems: "center", gap: 12, background: COLOR.redTint, border: `1px solid ${COLOR.red}22`, borderRadius: 12, padding: "12px 16px", marginBottom: 18 }}>
           <AlertTriangle size={16} color={COLOR.red} />
-          <div style={{ flex: 1, fontSize: 12.5 }}><strong>Potential reporting cluster nearby</strong> — {clusterCase.cluster.block} Block, {clusterCase.cluster.relatedReports} related reports. Status: under authority review.</div>
+          <div style={{ flex: 1, fontSize: 12.5 }}><strong>Potential reporting cluster nearby</strong>, {clusterCase.cluster.block} Block, {clusterCase.cluster.relatedReports} related reports. Status: under authority review.</div>
           <Button variant="secondary" small onClick={() => onOpen(clusterCase)}>View case</Button>
         </div>
       )}
@@ -1780,7 +1746,7 @@ function ContactFarmerPanel({ caseObj, onOutcome }) {
   if (state === "connected") {
     return (
       <div style={{ background: COLOR.forestTint, borderRadius: 10, padding: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}><span style={{ width: 7, height: 7, borderRadius: "50%", background: COLOR.forest, display: "inline-block" }} /><span style={{ fontSize: 13, fontWeight: 700, color: COLOR.forest }}>Connected — {caseObj.farmer}</span></div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}><span style={{ width: 7, height: 7, borderRadius: "50%", background: COLOR.forest, display: "inline-block" }} /><span style={{ fontSize: 13, fontWeight: 700, color: COLOR.forest }}>Connected, {caseObj.farmer}</span></div>
         <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 10, fontVariantNumeric: "tabular-nums" }}>{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</div>
         <Button variant="danger" small icon={PhoneOff} onClick={() => setState("outcome")}>End call</Button>
       </div>
@@ -1913,7 +1879,7 @@ function ExpertCaseDetail({ c, onBack, onAccept, onUpdate, showToast }) {
                 {editingTranscript ? (
                   <>
                     <textarea value={transcriptDraft} onChange={(e) => setTranscriptDraft(e.target.value)} rows={5} style={{ width: "100%", boxSizing: "border-box", padding: 10, borderRadius: 8, border: `1px solid ${COLOR.border}`, fontSize: 13, fontFamily: "inherit", marginBottom: 8 }} />
-                    <Button variant="primary" small onClick={() => { onUpdate(c.id, { transcriptEdited: true }); setEditingTranscript(false); showToast("Transcript updated — marked as edited by expert"); }}>Save edit</Button>
+                    <Button variant="primary" small onClick={() => { onUpdate(c.id, { transcriptEdited: true }); setEditingTranscript(false); showToast("Transcript updated, marked as edited by expert"); }}>Save edit</Button>
                   </>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1923,7 +1889,7 @@ function ExpertCaseDetail({ c, onBack, onAccept, onUpdate, showToast }) {
                         <div style={{ fontSize: 13 }}>{t.text}</div>
                       </div>
                     ))}
-                    {c.transcriptEdited && <div style={{ fontSize: 10.5, color: COLOR.amber, fontWeight: 600 }}>Edited by expert — original preserved</div>}
+                    {c.transcriptEdited && <div style={{ fontSize: 10.5, color: COLOR.amber, fontWeight: 600 }}>Edited by expert, original preserved</div>}
                   </div>
                 )}
               </div>
@@ -1941,7 +1907,7 @@ function ExpertCaseDetail({ c, onBack, onAccept, onUpdate, showToast }) {
               <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 600, marginBottom: 10 }}>{c.movement.previous} <ArrowRight size={14} color={COLOR.forest} /> {c.movement.current}</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 20px", marginBottom: 8 }}><Field label="Reported date" value={c.movement.date} /><Field label="Source" value={<SourceTag source="Farmer reported" />} /></div>
               <div style={{ fontSize: 12, color: COLOR.textSecondary, marginBottom: 4 }}>{c.movement.connection}</div>
-              <div style={{ fontSize: 11, color: COLOR.textMuted }}>Farmer-reported movement — not automatic GPS tracking.</div>
+              <div style={{ fontSize: 11, color: COLOR.textMuted }}>Farmer-reported movement, not automatic GPS tracking.</div>
             </Card>
           )}
           <Card title="Expert assessment" right={savedNote && <span style={{ fontSize: 11, color: COLOR.textMuted }}>{savedNote}</span>}>
@@ -1981,7 +1947,7 @@ function ExpertCaseDetail({ c, onBack, onAccept, onUpdate, showToast }) {
             <Card title="Local cluster context">
               <div style={{ fontSize: 12.5, marginBottom: 8 }}>This case is associated with <strong>{c.cluster.relatedReports} similar reports</strong> in {c.cluster.block} Block.</div>
               <Badge fg={COLOR.amber} bg={COLOR.amberTint}>Under authority review</Badge>
-              <div style={{ fontSize: 10.5, color: COLOR.textMuted, marginTop: 8 }}>Potential reporting pattern — not a confirmed outbreak.</div>
+              <div style={{ fontSize: 10.5, color: COLOR.textMuted, marginTop: 8 }}>Potential reporting pattern, not a confirmed outbreak.</div>
             </Card>
           )}
           <Card title="Case timeline">
@@ -2004,7 +1970,7 @@ function ExpertAdvisoriesPage({ advisories, setAdvisories, showToast }) {
     if (!message.trim()) return;
     setAdvisories((prev) => ({ ...prev, "Pending approval": [{ id: `AD-${Math.floor(Math.random() * 90 + 10)}`, title: "Draft advisory", area, animal: "Cattle", language: "Hindi", message, from: LOGGED_IN_EXPERT }, ...prev["Pending approval"]] }));
     setMessage("");
-    showToast("Draft saved — awaiting authority approval");
+    showToast("Draft saved, awaiting authority approval");
   };
   return (
     <div>
@@ -2078,10 +2044,6 @@ function ExpertRole({ cases, updateCase, advisories, setAdvisories, showToast })
     </div>
   );
 }
-
-/* ============================================================
-   ROLE: SURVEILLANCE (Alerts / Clusters / Movement / Analytics / Advisories)
-   ============================================================ */
 
 const SURV_STEPS = ["Detected", "Under review", "Investigation", "Verified / Dismissed", "Response"];
 function survStepIndex(a) { if (a.status === "VERIFIED" || a.status === "DISMISSED") return 3; if (a.investigation) return 2; if (a.status === "UNDER_REVIEW") return 1; return 0; }
@@ -2170,7 +2132,7 @@ function SurvAlertDetail({ alert: a, onBack, onUpdate, showToast }) {
               <div>• Reports occurred within a {a.timeWindow} window</div>
               {a.movementLinks > 0 && <div>• {a.movementLinks} farmer-reported livestock movement{a.movementLinks > 1 ? "s" : ""} linked to the area</div>}
             </div>
-            <div style={{ fontSize: 11.5, color: COLOR.textMuted, background: COLOR.surfaceSunken, borderRadius: 8, padding: 10 }}>Analytics indicate an unusual reporting pattern. This does not confirm an outbreak — veterinary/authority verification is required.</div>
+            <div style={{ fontSize: 11.5, color: COLOR.textMuted, background: COLOR.surfaceSunken, borderRadius: 8, padding: 10 }}>Analytics indicate an unusual reporting pattern. This does not confirm an outbreak, veterinary/authority verification is required.</div>
           </Card>
           {a.relatedCase && (
             <Card title="Related case">
@@ -2213,7 +2175,7 @@ function SurvAlertDetail({ alert: a, onBack, onUpdate, showToast }) {
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <Button variant="ghost" small onClick={() => setConfirming("dismiss")}>Dismiss</Button>
                 <Button variant="secondary" small onClick={() => setConfirming("verify")}>Verify / confirm</Button>
-                <Button variant="primary" small icon={Megaphone} onClick={() => { onUpdate(a.id, { advisorySent: true }); showToast("Advisory queued — see Advisories"); }}>Send advisory</Button>
+                <Button variant="primary" small icon={Megaphone} onClick={() => { onUpdate(a.id, { advisorySent: true }); showToast("Advisory queued, see Advisories"); }}>Send advisory</Button>
               </div>
             )}
           </Card>
@@ -2262,7 +2224,7 @@ function SurvMovementPage() {
   return (
     <div>
       <h1 style={{ fontSize: 19, fontWeight: 700, margin: "0 0 14px" }}>Livestock movement</h1>
-      <div style={{ fontSize: 13, color: COLOR.textSecondary, marginBottom: 16, maxWidth: 620 }}>Farmer-reported animal movements that may help identify connected reporting areas — not automatic GPS tracking.</div>
+      <div style={{ fontSize: 13, color: COLOR.textSecondary, marginBottom: 16, maxWidth: 620 }}>Farmer-reported animal movements that may help identify connected reporting areas, not automatic GPS tracking.</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 12, marginBottom: 16 }}>
         {[["Reported movements", stats.reported], ["From high-risk areas", stats.fromHighRisk], ["Potentially connected areas", stats.connected], ["Recent movements", stats.recent]].map(([l, v]) => (
           <div key={l} style={{ background: COLOR.surface, border: `1px solid ${COLOR.border}`, borderRadius: 12, padding: 15 }}><div style={{ fontSize: 22, fontWeight: 700 }}>{v}</div><div style={{ fontSize: 12, color: COLOR.textSecondary, marginTop: 2 }}>{l}</div></div>
@@ -2277,7 +2239,7 @@ function SurvMovementPage() {
                 <Field label="Animal" value={open.animal} /><Field label="Movement date" value={open.date} /><Field label="Origin" value={open.origin} /><Field label="Destination" value={open.destination} />
                 <Field label="Source" value={open.source} /><Field label="Associated case" value={`#${open.caseId}`} /><Field label="Destination reports" value={open.destinationReports} /><Field label="Potential connection" value={open.connected ? "Yes" : "No"} />
               </div>
-              <div style={{ fontSize: 12, color: COLOR.textSecondary, background: COLOR.surfaceSunken, borderRadius: 8, padding: 10 }}>{open.connected ? "Similar livestock-health reports have been recorded in the destination area — a potentially connected reporting pattern, not proof of transmission." : "No elevated reporting pattern found in the destination area."}</div>
+              <div style={{ fontSize: 12, color: COLOR.textSecondary, background: COLOR.surfaceSunken, borderRadius: 8, padding: 10 }}>{open.connected ? "Similar livestock-health reports have been recorded in the destination area, a potentially connected reporting pattern, not proof of transmission." : "No elevated reporting pattern found in the destination area."}</div>
             </div>
           </div>
         </Card>
@@ -2341,7 +2303,7 @@ function SurvAnalyticsPage() {
         <Card title="Mortality analytics">
           <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 10 }}><span style={{ fontSize: 26, fontWeight: 700 }}>18</span><span style={{ fontSize: 12.5, fontWeight: 600, color: COLOR.red }}>↑ 28% vs previous period</span></div>
           <ResponsiveContainer width="100%" height={90}><LineChart data={MORTALITY_TREND.map((v, i) => ({ i, v }))} margin={{ top: 4, right: 4, left: -30, bottom: 0 }}><Line type="monotone" dataKey="v" stroke={COLOR.orange} strokeWidth={2} dot={false} /><YAxis hide domain={["dataMin-2", "dataMax+2"]} /></LineChart></ResponsiveContainer>
-          <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 6 }}>Reported mortality — not attributed to a specific cause unless verified.</div>
+          <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 6 }}>Reported mortality, not attributed to a specific cause unless verified.</div>
         </Card>
         <Card title="Historical baseline">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 10 }}><Field label="Normal weekly avg" value="8" /><Field label="Current (Sanganer)" value="27" /><Field label="Change" value="+237%" /></div>
@@ -2467,10 +2429,6 @@ function SurveillanceRole({ alerts, updateAlert, advisories, setAdvisories, show
     </div>
   );
 }
-
-/* ============================================================
-   ROLE: ADMIN CONSOLE
-   ============================================================ */
 
 function AdminOverview() {
   return (
@@ -2777,10 +2735,6 @@ function AdminRole({ a11y, setA11y, showToast }) {
 }
 
 
-/* ============================================================
-   ROLE: PUBLIC DASHBOARD (no login required, read-only, aggregated)
-   ============================================================ */
-
 const PUBLIC_BLOCKS = ["Sanganer", "Bagru", "Chomu", "Amer", "Phulera"];
 
 const PUBLIC_MAP_CENTER = [26.91, 75.64];
@@ -2945,7 +2899,7 @@ function PublicRole({ cases, alerts, advisories }) {
               <Line type="monotone" dataKey="v" stroke={COLOR.forest} strokeWidth={2.5} dot={{ r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
-          <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 8 }}>Number of reports — not disease incidence.</div>
+          <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 8 }}>Number of reports, not disease incidence.</div>
         </Card>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -2956,7 +2910,7 @@ function PublicRole({ cases, alerts, advisories }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <Card title="Reported mortality">
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 8 }}><span style={{ fontSize: 26, fontWeight: 700 }}>18</span><span style={{ fontSize: 12.5, fontWeight: 600, color: COLOR.red }}>↑ 28% vs previous period</span></div>
-            <div style={{ fontSize: 11.5, color: COLOR.textMuted }}>Reports involving mortality — not attributed to a specific cause unless verified.</div>
+            <div style={{ fontSize: 11.5, color: COLOR.textMuted }}>Reports involving mortality, not attributed to a specific cause unless verified.</div>
           </Card>
           <Card title="Areas requiring attention">
             {stats.blockAlerts.filter((a) => a.status !== "DISMISSED").length === 0 ? <EmptyState title="No unusual patterns nearby" body="Reporting is within expected levels." /> : (
@@ -3023,10 +2977,6 @@ function PublicRole({ cases, alerts, advisories }) {
   );
 }
 
-/* ============================================================
-   LOGIN + ROLE SWITCHER SHELL
-   ============================================================ */
-
 const ROLES = [
   { id: "farmer", label: "Farmer", sub: "Report a problem, track cases", icon: "🐄" },
   { id: "call", label: "Call Console", sub: "Live IVR calls & AI extraction", icon: "📞" },
@@ -3036,9 +2986,6 @@ const ROLES = [
   { id: "admin", label: "Admin", sub: "Users, rules & system config", icon: "⚙️" },
 ];
 
-// Real SHA-256 hashing in the browser via Web Crypto — genuine hashing, not
-// a fake spinner. A production system would still need HTTPS transport and
-// server-side salted hashing on top of this; there is no backend here.
 async function hashPassword(pw) {
   if (typeof window !== "undefined" && window.crypto && window.crypto.subtle) {
     const enc = new TextEncoder().encode(pw);
@@ -3049,11 +2996,11 @@ async function hashPassword(pw) {
 }
 
 function LoginScreen({ onSignIn, onViewPublic, showToast }) {
-  const [step, setStep] = useState("role"); // 'role' | 'credentials'
+  const [step, setStep] = useState("role");
   const [role, setRole] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phase, setPhase] = useState("idle"); // idle | hashing | signing
+  const [phase, setPhase] = useState("idle");
   const [hashPreview, setHashPreview] = useState("");
 
   const chooseRole = (r) => { setRole(r); setStep("credentials"); };
@@ -3076,10 +3023,10 @@ function LoginScreen({ onSignIn, onViewPublic, showToast }) {
           <span style={{ fontSize: 17, fontWeight: 700 }}>Kisan Seva</span>
         </div>
         <h1 style={{ fontSize: 30, fontWeight: 700, lineHeight: 1.25, margin: "0 0 14px", maxWidth: 380 }}>From farmer reports to early warning.</h1>
-        <p style={{ fontSize: 14.5, color: "rgba(255,255,255,0.8)", maxWidth: 380, lineHeight: 1.6 }}>Helping veterinary teams respond faster to livestock health risks — while turning every report into useful public-health intelligence.</p>
+        <p style={{ fontSize: 14.5, color: "rgba(255,255,255,0.8)", maxWidth: 380, lineHeight: 1.6 }}>Helping veterinary teams respond faster to livestock health risks, while turning every report into useful public-health intelligence.</p>
         <div style={{ marginTop: 30 }}>
           <button onClick={onViewPublic} style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 8, padding: "10px 16px", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            👁 View public dashboard — no login required
+            👁 View public dashboard, no login required
           </button>
         </div>
       </div>
@@ -3119,7 +3066,7 @@ function LoginScreen({ onSignIn, onViewPublic, showToast }) {
                 </div>
               </div>
               <div style={{ fontSize: 10.5, color: COLOR.textMuted, marginBottom: 16, display: "flex", alignItems: "center", gap: 5 }}>
-                🔒 Password is hashed (SHA-256) in your browser before it's used — a real deployment would also add HTTPS and server-side salted hashing.
+                🔒 Password is hashed (SHA-256) in your browser before it's used, a real deployment would also add HTTPS and server-side salted hashing.
               </div>
               <Button variant="primary" disabled={phase !== "idle"}>{phase === "hashing" ? "Encrypting…" : phase === "signing" ? "Signing in…" : "Sign in"}</Button>
               {hashPreview && phase === "signing" && <div style={{ fontSize: 10.5, color: COLOR.textMuted, marginTop: 8, fontFamily: "monospace" }}>hash: {hashPreview}</div>}
@@ -3156,10 +3103,6 @@ function RoleSwitcherBar({ activeRole, setActiveRole, onSignOut }) {
     </div>
   );
 }
-
-/* ============================================================
-   ROOT APP
-   ============================================================ */
 
 export default function App() {
   const [authed, setAuthed] = useState(false);
