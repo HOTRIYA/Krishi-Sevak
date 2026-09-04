@@ -874,7 +874,7 @@ function FarmerStepLocation({ data, set }) {
         <div style={{ textAlign: "center", padding: "20px 0", color: COLOR.textSecondary, fontSize: 13.5 }}>📍 Getting your location…</div>
       ) : asking ? (
         <div style={{ background: COLOR.blueTint, borderRadius: 12, padding: 16 }}>
-          <div style={{ fontSize: 13.5, color: COLOR.text, marginBottom: 14 }}>Krishi Seva would like to use your location to find the right veterinary authority.</div>
+          <div style={{ fontSize: 13.5, color: COLOR.text, marginBottom: 14 }}>Krishi Sevak would like to use your location to find the right veterinary authority.</div>
           <div style={{ display: "flex", gap: 10 }}><PrimaryBtn full={false} onClick={grantPermission}>Allow</PrimaryBtn><GhostBtn full={false} onClick={() => setAsking(false)}>Not now</GhostBtn></div>
         </div>
       ) : (
@@ -1169,7 +1169,7 @@ function FarmerRole({ cases, addCase, updateCase, advisories }) {
         <div style={{ background: COLOR.surface, borderBottom: `1px solid ${COLOR.border}`, padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 24, height: 24, borderRadius: 6, background: COLOR.forest, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 11 }}>K</div>
-            <span style={{ fontSize: 13.5, fontWeight: 700 }}>Krishi Seva</span>
+            <span style={{ fontSize: 13.5, fontWeight: 700 }}>Krishi Sevak</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button onClick={() => setLang((l) => (l === "en" ? "hi" : "en"))} style={{ background: "none", border: "none", fontSize: 11.5, fontWeight: 700, color: COLOR.forest, cursor: "pointer" }}>{lang === "en" ? "हिन्दी" : "English"}</button>
@@ -2377,7 +2377,7 @@ function CreateAdvisoryModal({ onClose, onSubmit }) {
     return (
       <Modal title="Preview advisory" onClose={onClose}>
         <div style={{ background: COLOR.surfaceSunken, borderRadius: 10, padding: 14, marginBottom: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: COLOR.forest, marginBottom: 6 }}>📱 Krishi Seva</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: COLOR.forest, marginBottom: 6 }}>📱 Krishi Sevak</div>
           <div style={{ fontSize: 14, lineHeight: 1.7 }}>{message}</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 16 }}><Field label="Target" value={area} /><Field label="Language" value={language} /></div>
@@ -2834,7 +2834,7 @@ function PublicHeader({ onSignInClick }) {
     <div style={{ borderBottom: `1px solid ${COLOR.border}`, background: COLOR.surface, padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
         <div style={{ width: 28, height: 28, borderRadius: 7, background: COLOR.forest, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13 }}>K</div>
-        <span style={{ fontSize: 14.5, fontWeight: 700 }}>Krishi Seva</span>
+        <span style={{ fontSize: 14.5, fontWeight: 700 }}>Krishi Sevak</span>
         <Badge fg={COLOR.blue} bg={COLOR.blueTint}>Public Dashboard</Badge>
       </div>
       <Button variant="secondary" small onClick={onSignInClick}>Authority login</Button>
@@ -3020,7 +3020,7 @@ function LoginScreen({ onSignIn, onViewPublic, showToast }) {
       <div style={{ flex: 1, background: COLOR.forest, color: "#fff", padding: 48, display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 320 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 30 }}>
           <div style={{ width: 34, height: 34, borderRadius: 8, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>K</div>
-          <span style={{ fontSize: 17, fontWeight: 700 }}>Krishi Seva</span>
+          <span style={{ fontSize: 17, fontWeight: 700 }}>Krishi Sevak</span>
         </div>
         <h1 style={{ fontSize: 30, fontWeight: 700, lineHeight: 1.25, margin: "0 0 14px", maxWidth: 380 }}>From farmer reports to early warning.</h1>
         <p style={{ fontSize: 14.5, color: "rgba(255,255,255,0.8)", maxWidth: 380, lineHeight: 1.6 }}>Helping veterinary teams respond faster to livestock health risks, while turning every report into useful public-health intelligence.</p>
@@ -3058,7 +3058,7 @@ function LoginScreen({ onSignIn, onViewPublic, showToast }) {
               <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 }}>
                 <div>
                   <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginBottom: 5 }}>Email</div>
-                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={`${role.id}@Krishi Seva.gov.in`} style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: 8, border: `1px solid ${COLOR.border}`, fontSize: 13.5 }} />
+                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={`${role.id}@Krishi Sevak.gov.in`} style={{ width: "100%", boxSizing: "border-box", padding: "10px 12px", borderRadius: 8, border: `1px solid ${COLOR.border}`, fontSize: 13.5 }} />
                 </div>
                 <div>
                   <div style={{ fontSize: 11.5, color: COLOR.textMuted, marginBottom: 5 }}>Password</div>
@@ -3086,7 +3086,7 @@ function RoleSwitcherBar({ activeRole, setActiveRole, onSignOut }) {
     <div style={{ borderBottom: `1px solid ${COLOR.border}`, background: COLOR.surface, padding: "10px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <div style={{ width: 26, height: 26, borderRadius: 7, background: COLOR.forest, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 12 }}>K</div>
-        <span style={{ fontSize: 13.5, fontWeight: 700 }}>Krishi Seva</span>
+        <span style={{ fontSize: 13.5, fontWeight: 700 }}>Krishi Sevak</span>
         <span style={{ display: "inline-flex", alignItems: "center", fontSize: 10, fontWeight: 700, color: COLOR.clay, background: COLOR.clayTint, padding: "2px 7px", borderRadius: 12, marginLeft: 4 }}>DEMO</span>
       </div>
       <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
